@@ -1,9 +1,10 @@
 import os, sys
 import csv
+import cv2
 try:
     import numpy as np
 except:
-    print "Failed to import numpy package."
+    print("Failed to import numpy package.")
     sys.exit(-1)
 try:
     import imageio
@@ -77,6 +78,43 @@ def visualize_instance_image(filename, image):
         vis_image[image==inst] = color_palette[inst%len(color_palette)]
     imageio.imwrite(filename, vis_image)
 
+def visualize_label(filename):
+    color_palette = create_color_palette()
+    H,W=200,200
+    img_tmp=np.ones([H,W,3])
+    lis_image=[]
+    lis_tmp=[]
+    nyu40_label=['void',
+                'wall','floor','cabinet','bed','chair',
+                'sofa','table','door','window','bookshelf',
+                'picture','counter','blinds','desk','shelves',
+                'curtain','dresser','pillow','mirror','floor',
+                'clothes','ceiling','books','refrigerator','tv',
+                'paper','towel','shower curtain','box','white board',
+                'person','night stand','toilet','sink','lamp',
+                'bathtub','bag','other struct','otherfurn','other prop']
+    
+    for i in range(1,41):
+        labels=color_palette[i]
+        labels_vis=(img_tmp*labels).astype('uint8')
+        key=nyu40_label[i]
+
+        cv2.putText(labels_vis, key,  (20, int(labels_vis.shape[0]-20)), 
+            fontFace= cv2.FONT_HERSHEY_SIMPLEX, 
+            fontScale = 0.6, 
+            color = (255, 255, 255), 
+            thickness = 2)
+        lis_tmp.append(labels_vis)
+        lis_tmp.append(255*np.ones((H, 10, 3)).astype('uint8'))
+        if i%5==0:
+            img_cat=np.concatenate(lis_tmp, axis=1)
+            lis_image.append(img_cat)
+            lis_image.append(255*np.ones((10, img_cat.shape[1], 3)).astype('uint8'))
+            lis_tmp=[]
+        i+=1
+        
+    img_labels=np.concatenate(lis_image, axis=0)
+    cv2.imwrite(filename, img_labels[...,::-1])
 
 # color palette for nyu40 labels
 def create_color_palette():
@@ -123,3 +161,6 @@ def create_color_palette():
        (82, 84, 163),  		# otherfurn
        (100, 85, 144)
     ]
+
+if __name__=='__main__':
+    visualize_label('./nyu40.png')

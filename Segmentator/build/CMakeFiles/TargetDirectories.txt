@@ -1,0 +1,3 @@
+/home/du/Proj/Dataset/ScanNet/ScanNet/Segmentator/build/CMakeFiles/rebuild_cache.dir
+/home/du/Proj/Dataset/ScanNet/ScanNet/Segmentator/build/CMakeFiles/edit_cache.dir
+/home/du/Proj/Dataset/ScanNet/ScanNet/Segmentator/build/CMakeFiles/segmentator.dir
